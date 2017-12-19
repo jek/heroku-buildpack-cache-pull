@@ -22,6 +22,9 @@ if [ -f "${ENV_DIR}/BUILDPACK_CACHE_DEBUG" ]; then
            find . -type d -name .git -prune -o -type f -print0 | \
            xargs -0 ${SHASUM} | \
            sort)
+    echo "Final hash: ${BUILD_HASH}"
+    echo "Cache dir contents:"
+    echo $(ls $CACHE_DIR/slug-cache)
 fi
 
 CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
