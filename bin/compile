@@ -19,7 +19,7 @@ BUILD_HASH=$(cd ${BUILD_DIR} && \
 if [ -f "${ENV_DIR}/BUILDPACK_CACHE_DEBUG" ]; then
     echo "       DEBUG:"
     echo $(cd ${BUILD_DIR} && \
-           find . -type d -name .git -prune -o -type f -print | \
+           find . -type d -name .git -prune -o -type f -print0 | \
            xargs -0 ${SHASUM} | \
            sort)
 fi
