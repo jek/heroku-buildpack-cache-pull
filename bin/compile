@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+BUILD_DIR="$1"
+CACHE_DIR="$2"
+ENV_DIR="$3"
+
+if [ "$(uname)" == Darwin ]; then
+    SHASUM=shasum
+else
+    SHASUM=sha256sum
+fi
+
+BUILD_HASH=$(find ${BUILD_DIR} -type f -print0 | \
+             xargs -0 ${SHASUM} | \
+             sort | \
+             ${SHASUM} | \
+             cut -d' ' -f1)
+
+CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
+
+# Cache miss. Let the future buildpacks do their thing.
+if [ ! -f ${CACHE_FILE} ]; then
+    echo "      Sources have changed, rebuild is needed."
+    exit 0
+fi
+
+# Use the cache!
+
+WHEN=$(stat -f '%Sc' ${CACHE_FILE})
+echo "      Build cache hit, using ${BUILD_HASH} built on ${WHEN}"
+echo "      Cache does not track buildpack changes; clear your cache"
+echo "      when updating buildpacks."
+# Remove the to-be-built sources.
+rm -rf ${BUILD_DIR}
+mkdir ${BUILD_DIR}
+
+# Replace them with the cached slug contents.
+cd ${BUILD_DIR} && tar jxf ${CACHE_FILE}
+
+echo "      Adding __cached_slug__ marker for subsequent buildpacks."
+touch ${BUILD_DIR}/__cached_slug__
+
