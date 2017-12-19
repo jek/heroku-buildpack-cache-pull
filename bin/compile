@@ -18,10 +18,10 @@ BUILD_HASH=$(cd ${BUILD_DIR} && \
 
 if [ -f "${ENV_DIR}/BUILDPACK_CACHE_DEBUG" ]; then
     echo "       DEBUG:"
-    $(cd ${BUILD_DIR} && \
-      find . -type d -name .git -prune -o -type f -print | \
-      xargs -0 ${SHASUM} | \
-      sort)
+    echo $(cd ${BUILD_DIR} && \
+           find . -type d -name .git -prune -o -type f -print | \
+           xargs -0 ${SHASUM} | \
+           sort)
 fi
 
 CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
