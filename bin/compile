@@ -9,15 +9,12 @@ else
     SHASUM=sha256sum
 fi
 
-BUILD_HASH=$(find ${BUILD_DIR} -type d -name .git -prune -o -type f -print0 | \
+BUILD_HASH=$(cd ${BUILD_DIR} && \
+             find . -type d -name .git -prune -o -type f -print0 | \
              xargs -0 ${SHASUM} | \
              sort | \
              ${SHASUM} | \
              cut -d' ' -f1)
-
-echo "       Current Status:"
-find ${BUILD_DIR} -type d -name .git -prune -o -type f -print0 | \
-  xargs -0 ${SHASUM} | sort
 
 CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
 
