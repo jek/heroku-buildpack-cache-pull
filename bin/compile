@@ -16,6 +16,12 @@ BUILD_HASH=$(cd ${BUILD_DIR} && \
              ${SHASUM} | \
              cut -d' ' -f1)
 
+echo "       DEBUG:"
+$(cd ${BUILD_DIR} && \
+      find . -type d -name .git -prune -o -type f -print0 | \
+      xargs -0 ${SHASUM} | \
+      sort)
+
 CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
 
 # Cache miss. Let the future buildpacks do their thing.
