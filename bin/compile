@@ -9,7 +9,7 @@ else
     SHASUM=sha256sum
 fi
 
-BUILD_HASH=$(find ${BUILD_DIR} -type f -print0 | \
+BUILD_HASH=$(find ${BUILD_DIR} -type d -name .git -prune -o -type f -print0 | \
              xargs -0 ${SHASUM} | \
              sort | \
              ${SHASUM} | \
