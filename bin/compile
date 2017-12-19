@@ -22,9 +22,7 @@ if [ -f "${ENV_DIR}/BUILDPACK_CACHE_DEBUG" ]; then
            find . -type d -name .git -prune -o -type f -print0 | \
            xargs -0 ${SHASUM} | \
            sort)
-    echo "Final hash: ${BUILD_HASH}"
-    echo "Cache dir contents:"
-    echo $(ls $CACHE_DIR/slug-cache)
+    echo "Build hash: ${BUILD_HASH}"
 fi
 
 CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
@@ -32,6 +30,7 @@ CACHE_FILE="${CACHE_DIR}/slug-cache/${BUILD_HASH}.tar.bz2"
 # Cache miss. Let the future buildpacks do their thing.
 if [ ! -f ${CACHE_FILE} ]; then
     echo "      Sources have changed, rebuild is needed."
+    echo ${BUILD_HASH} > ${BUILD_DIR}/__cache_build__
     exit 0
 fi
 
